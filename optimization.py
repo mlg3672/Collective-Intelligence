@@ -41,6 +41,7 @@ def schedulecost(sol):
     earliestdep=24*60
 
     for d in range(int(len(sol)/2)):
+        #print('d is:' + str(d))
         # Get the inbound and outbound flights
         origin=people[d][1]
         outbound=flights[(origin,destination)][int(sol[d*2])]
@@ -94,21 +95,23 @@ def hillclimb(domain,costf):
     # Create list of neighboring solutions
         neighbors=[]
     
-    for j in range(len(domain)):
-        # One away in each direction
-        if sol[j]>domain[j][0]:
-            neighbors.append(sol[0:j]+[sol[j]+1]+sol[j+1:])
-        if sol[j]<domain[j][1]:
-            neighbors.append(sol[0:j]+[sol[j]-1]+sol[j+1:])
-
-    # See what the best solution amongst the neighbors is
-    current=costf(sol)
-    best=current
-    for j in range(len(neighbors)):
-        cost=costf(neighbors[j])
-        if cost<best:
-            best=cost
-            sol=neighbors[j]
+        for j in range(len(domain)):
+            # One away in each direction
+            
+            if sol[j]>domain[j][0]:
+                neighbors.append(sol[0:j]+[sol[j]+1]+sol[j+1:])
+            if sol[j]<domain[j][1]:
+                neighbors.append(sol[0:j]+[sol[j]-1]+sol[j+1:])
+        print(sol)
+        # See what the best solution amongst the neighbors is
+        current=costf(sol)
+        best=current
+        for j in range(len(neighbors)):
+            cost=costf(neighbors[j])
+            if cost<best:
+                best=cost
+                sol=neighbors[j]
+            
 
     # If there's no improvement, then we've reached the top
         if best==current:
@@ -171,7 +174,7 @@ def geneticoptimize(domain,costf,popsize=50,step=1,
   
     # How many winners from each generation?
     topelite=int(elite*popsize)
-  
+    print('topelite is:'+ str(topelite))
     # Main loop 
     for i in range(maxiter):
         scores=[(costf(v),v) for v in pop]
@@ -179,23 +182,26 @@ def geneticoptimize(domain,costf,popsize=50,step=1,
         ranked=[v for (s,v) in scores]
     
     # Start with the pure winners
-    pop=ranked[0:topelite]
+        pop=ranked[0:topelite]
     
     # Add mutated and bred forms of the winners
     while len(pop)<popsize:
         if random.random()<mutprob:
 
             # Mutation
-            c=random.randint(0,topelite)
+            c=random.randint(0,topelite-1)
             pop.append(mutate(ranked[c]))
         else:
       
             # Crossover
-            c1=random.randint(0,topelite)
-            c2=random.randint(0,topelite)
+            c1=random.randint(0,topelite-1)
+            c2=random.randint(0,topelite-1)
+            print('c1 is: '+str(c1)+' c2 is:' + str(c2))
+            print(ranked[c1])
+            print(ranked[c2])
             pop.append(crossover(ranked[c1],ranked[c2]))
     
     # Print current best score
-    print(scores[0][0])
+        print('scores:'+ str(scores[0][0]))
     
     return scores[0][1]
