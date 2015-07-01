@@ -19,6 +19,7 @@ for line in open('schedule.txt'):
 
     # Add details to the list of possible flights
     flights[(origin,dest)].append((depart,arrive,int(price)))
+# print(flights)
 
 def getminutes(t):
     x=time.strptime(t,'%H:%M')
@@ -39,7 +40,7 @@ def schedulecost(sol):
     latestarrival=0
     earliestdep=24*60
 
-    for d in range(len(sol)/2):
+    for d in range(int(len(sol)/2)):
         # Get the inbound and outbound flights
         origin=people[d][1]
         outbound=flights[(origin,destination)][int(sol[d*2])]
@@ -56,7 +57,7 @@ def schedulecost(sol):
     # Every person must wait at the airport until the latest person arrives.
     # They also must arrive at the same time and wait for their flights.
     totalwait=0  
-    for d in range(len(sol)/2):
+    for d in range(int(len(sol)/2)):
         origin=people[d][1]
         outbound=flights[(origin,destination)][int(sol[d*2])]
         returnf=flights[(destination,origin)][int(sol[d*2+1])]
@@ -74,8 +75,7 @@ def randomoptimize(domain,costf):
     for i in range(0,1000):
         # Create a random solution
         r=[float(random.randint(domain[i][0],domain[i][1])) 
-           for i in range(len(domain))]
-    
+        for i in range(len(domain))]
         # Get the cost
         cost=costf(r)
     
